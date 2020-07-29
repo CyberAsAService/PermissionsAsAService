@@ -8,11 +8,13 @@ app.config["DEBUG"] = False
 BF_FORMAT = './Bruteforcer.sh -a {address} -u {user}'
 
 
-@app.route('/bf', methods=['POST'])
+@app.route('/PaaS', methods=['POST'])
 def bruteforce():
-    if not request.json or 'address' not in request.json or 'username' not in request.json:
+    if not request.json or 'address' not in request.json or 'username' not in request.json or 'steps' not in request.json:
         abort(400)
-    # TODO -> Allow multiple endpoints
+    if "laps" in request.json['steps']:
+        #TODO -> ADD LAPS
+        pass
     endpoint = Endpoint(request.json['address'], request.json['username'], '')
     process = sp.Popen(BF_FORMAT.format(user=endpoint.username, address=endpoint.ip_address), shell=True,
                        stdout=sp.PIPE,
@@ -36,6 +38,7 @@ def bruteforce():
         abort(400, "unknown error:{}".format(stderr))
     return jsonify(message=msg)
 
+    #TODO?-> Vulnerabilities?
 
 @app.route('/')
 def index():
