@@ -28,7 +28,8 @@ def BruteForce(address, username):
     success = True
     print("stdout:", stdout)
     if "The command completed successfully.\r\n\r\nThe command completed successfully.\r\n\r\n" in stdout:
-        return "\nBackdoor created successfully on " + address
+        return success, "\nBackdoor created successfully on " + address
+
 
     elif "The account already exists." in stderr:
 
@@ -40,6 +41,8 @@ def BruteForce(address, username):
     else:
         success = False
         msg += "unknown error:{}".format(stderr)
+    print("hi:")
+    print(success,msg)
     return success, msg
 
 
@@ -89,13 +92,14 @@ def _PaaS(self, steps, address, username):
 def status(task_id):
     res = AsyncResult(task_id, app=celery)
     if res.status in ["FAILURE", "SUCCESS"]:
-        return jsonify(**res.get())
+        return jsonify(status=res.status,**res.get())
     else:
         return jsonify(status=res.status)
 
 
 @app.route('/PaaS', methods=['POST'])
 def PaaS():
+    print(request.json, request.form)
     if not request.json or 'address' not in request.json or 'username' not in request.json or 'steps' not in request.json:
         abort(400)
     task = _PaaS.apply_async(args=(request.json['steps'], request.json['address'], request.json['username']), link=update.s())
