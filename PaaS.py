@@ -75,16 +75,27 @@ def update(result):
 
 @celery.task(bind=True)
 def _PaaS(self, steps, address, username):
+    update({"success" : True, "message" : "Started PaaS", "task_id":request.id})
     success = ""
     msg = ""
     if "laps" in steps:
+        update({"success" : True, "message" : "LAPS started", "task_id":self.request.id})
+        #LAPS functions
+        update({"success" : success, "message" : "LAPS returned: " + msg, "task_id":self.request.id})
         pass
         # TODO -> ADD LAPS
     if "Vulnerabilities" in steps:
+        update({"success" : True, "message" : "Vulnerabilities started", "task_id":self.request.id})
+        #Vulnerabilities functions
+        update({"success" : success, "message" : "Vulnerabilities returned: " + msg, "task_id":self.request.id})
+        
         pass
         # TODO -> ADD Vulnerabilites
     if "BruteForce" in steps:
+        update({"success" : True, "message" : "Bruteforce started", "task_id":self.request.id})
         success, msg = BruteForce(address, username)
+        update({"success" : success, "message" : "Bruteforce returned: " + msg, "task_id":self.request.id})
+        
     return {"success": success, "msg": msg, "address":address, "task_id":self.request.id}
 
 
