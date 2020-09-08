@@ -75,6 +75,7 @@ def update(result):
 
 @celery.task(bind=True)
 def _PaaS(self, steps, address, username):
+    update({"success" : True, "message" : "Started PaaS", "task_id":request.id})
     success = ""
     msg = ""
     if "laps" in steps:
@@ -91,9 +92,9 @@ def _PaaS(self, steps, address, username):
         pass
         # TODO -> ADD Vulnerabilites
     if "BruteForce" in steps:
-        update({"success" : True, "message" : "Bureforce started", "task_id":self.request.id})
+        update({"success" : True, "message" : "Bruteforce started", "task_id":self.request.id})
         success, msg = BruteForce(address, username)
-        update({"success" : success, "message" : "Bureforce returned: " + msg, "task_id":self.request.id})
+        update({"success" : success, "message" : "Bruteforce returned: " + msg, "task_id":self.request.id})
         
     return {"success": success, "msg": msg, "address":address, "task_id":self.request.id}
 
@@ -110,12 +111,9 @@ def status(task_id):
 @app.route('/PaaS', methods=['POST'])
 def PaaS():
     print(request.json, request.form)
-    update({"success" : True, "message" : "Started PaaS", "task_id":request.id})
     if not request.json or 'address' not in request.json or 'username' not in request.json or 'steps' not in request.json:
-        update({"success" : False, "message" : "Incorrect input / request", "task_id":request.id})
         abort(400)
     task = _PaaS.apply_async(args=(request.json['steps'], request.json['address'], request.json['username']), link=update.s())
-    update({"success" : True, "message" : "PaaS success", "task_id":request.id})
     return jsonify(task_id=task.id)
 
     # TODO?-> Vulnerabilities?
