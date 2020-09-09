@@ -6,5 +6,5 @@ COPY requirements.txt .
 RUN python3 -m pip install -r requirements.txt
 COPY . .
 EXPOSE 5000
-ENTRYPOINT ["python3"]
-CMD ["PaaS.py"]
+ENTRYPOINT ["./docker-entrypoint.sh"]
+#CMD ["webserver"]
