@@ -1,0 +1,6 @@
+Flask==1.1.2
+celery==4.4.6
+redis==3.5.3
+gevent==20.6.2
+requests==2.24.0
+git+git://github.com/mher/flower.git#egg=flower
