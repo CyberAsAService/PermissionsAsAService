@@ -75,7 +75,7 @@ def update(result):
 
 @celery.task(bind=True)
 def _PaaS(self, steps, address, username):
-    update({"success" : True, "message" : "Started PaaS", "task_id":request.id})
+    update({"success" : True, "message" : "Started PaaS", "task_id":self.request.id})
     success = ""
     msg = ""
     if "laps" in steps:
